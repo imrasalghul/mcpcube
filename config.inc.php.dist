@@ -1,0 +1,69 @@
+<?php
+
+$config = [];
+
+// Required. Independent 256-bit key used to encrypt IMAP passwords at rest and
+// to wrap bearer tokens in transit during the device-authorization handshake.
+// Generate once with: openssl rand -base64 32
+// Keep this key outside the database, restrict access to config.inc.php, back it
+// up securely, and never rotate it without first deleting mcpcube_agents rows
+// (every authorized agent would otherwise need to re-pair).
+$config['mcpcube_encryption_key'] = 'REPLACE_WITH_BASE64_32_BYTE_KEY';
+
+// How long an approved agent's bearer token stays valid before the user must
+// re-pair. Default 30 days, per RFC 8628 this is independent of the short
+// device_code/user_code TTL below.
+$config['mcpcube_token_ttl'] = 30 * 86400;
+
+// How long an unclaimed device_code / user_code pair stays valid while the
+// agent is showing the user the login link and waiting for approval.
+$config['mcpcube_device_code_ttl'] = 600;
+
+// Minimum seconds an agent must wait between polls of the token endpoint for
+// the same device_code (RFC 8628 "interval").
+$config['mcpcube_poll_interval'] = 5;
+
+// How long a two-step delete confirmation token stays valid after being
+// issued by e.g. delete_message/delete_contact's preview call.
+$config['mcpcube_confirmation_ttl'] = 300;
+
+// Scopes an agent may request. A device_authorize call may only request a
+// subset of these; the consent page always shows the exact scopes requested.
+$config['mcpcube_available_scopes'] = [
+    'mail.read', 'mail.write', 'mail.delete',
+    'contacts.read', 'contacts.write', 'contacts.delete',
+    'settings.read', 'settings.write', 'settings.delete',
+];
+
+// Least-privilege scopes granted when a device_authorize call does not name
+// any. Write/delete access must be requested explicitly and remains visible
+// on the consent page.
+$config['mcpcube_default_scopes'] = [
+    'mail.read', 'contacts.read', 'settings.read',
+];
+
+// Absolute HTTPS base URL of this Roundcube install, used to build the
+// verification_uri returned to agents and to construct login links. Explicit
+// so neither the Host header nor a reverse proxy can redirect the link
+// elsewhere. Example: https://mail.example.com
+$config['mcpcube_public_url'] = 'https://mail.example.com';
+
+// Friendly server name shown on the consent screen and in whoami responses.
+$config['mcpcube_server_name'] = 'MCPcube';
+
+// Maximum number of currently-valid (non-revoked, non-expired) agents a
+// single Roundcube user may have at once. Excess device_authorize approvals
+// are rejected until the user revokes an old agent from Settings.
+$config['mcpcube_max_agents_per_user'] = 10;
+
+// Rate limit for the unauthenticated device_authorize/device_token endpoints,
+// keyed by remote IP: max requests per mcpcube_rate_limit_window seconds.
+$config['mcpcube_rate_limit_max'] = 30;
+$config['mcpcube_rate_limit_window'] = 60;
+
+// Roundcube shared cache used before a user is authenticated. Do not change
+// this to a per-user cache: device authorization intentionally starts before
+// the user opens the approval link.
+$config['mcpcube_ratelimit_cache'] = 'db';
+$config['mcpcube_ratelimit_cache_ttl'] = $config['mcpcube_rate_limit_window'];
+$config['mcpcube_oauth_access_ttl'] = 3600;

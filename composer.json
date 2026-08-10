@@ -1,0 +1,33 @@
+{
+    "name": "radialapps/mcpcube",
+    "type": "roundcube-plugin",
+    "description": "Model Context Protocol (MCP) server plugin for Roundcube 1.7 - lets an authorized AI agent read/send/delete mail, manage contacts, and manage identities on the user's behalf.",
+    "license": "MIT",
+    "homepage": "https://alghul.com",
+    "authors": [
+        {
+            "name": "Ra's al Ghul",
+            "homepage": "https://alghul.com"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/imrasalghul/oidc-cube.git"
+        }
+    ],
+    "require": {
+        "php": ">=8.2",
+        "ext-openssl": "*",
+        "imrasalghul/oidc-cube": "dev-master",
+        "ext-json": "*",
+        "nikic/php-parser": "^4.18"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.5 || ^11.0"
+    },
+    "suggest": {
+        "ext-mbstring": "Required by Roundcube",
+        "radialapps/roundcube-oidc": "Required at runtime for the OIDC/Auth0 login integration"
+    }
+}
