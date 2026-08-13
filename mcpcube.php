@@ -88,6 +88,7 @@ class mcpcube extends rcube_plugin
             self::MCP_ACTION => $this->mcpEndpoint(),
             self::OAUTH_TOKEN_ACTION => $this->oauthToken(),
             self::OAUTH_REGISTER_ACTION => $this->oauthRegister(),
+            self::OAUTH_AUTHORIZE_ACTION => $this->oauthAuthorize(),
             default => $this->wellKnownDispatch(),
         };
 
