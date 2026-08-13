@@ -65,6 +65,7 @@ final class mcpcube_oauth
     public static function authorize(): void
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') self::json(['error' => 'invalid_request'], 405);
+        $base = rtrim((string) rcmail::get_instance()->config->get('mcpcube_public_url', ''), '/');
         $client = self::client((string) ($_GET['client_id'] ?? ''));
         $redirect = (string) ($_GET['redirect_uri'] ?? '');
         $state = (string) ($_GET['state'] ?? '');
